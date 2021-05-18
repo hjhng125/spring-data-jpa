@@ -1,9 +1,10 @@
-package me.hjhng125.springdatajpa;
+package me.hjhng125.springdatajpa.study;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import me.hjhng125.springdatajpa.account.Account;
 
 @Entity
 public class Study {

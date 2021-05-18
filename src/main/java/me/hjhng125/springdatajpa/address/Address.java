@@ -1,4 +1,4 @@
-package me.hjhng125.springdatajpa;
+package me.hjhng125.springdatajpa.address;
 
 import javax.persistence.Embeddable;
 

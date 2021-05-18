@@ -3,6 +3,8 @@ package me.hjhng125.springdatajpa;
 import java.util.Date;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import me.hjhng125.springdatajpa.account.Account;
+import me.hjhng125.springdatajpa.study.Study;
 import org.hibernate.Session;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

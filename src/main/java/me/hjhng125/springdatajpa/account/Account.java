@@ -2,6 +2,8 @@ package me.hjhng125.springdatajpa.account;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -9,10 +11,12 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import me.hjhng125.springdatajpa.address.Address;
+import me.hjhng125.springdatajpa.study.Study;
 import org.springframework.data.annotation.CreatedDate;
 
 // 테이블과 도메인 객체를 어떻게 매핑시킬지 hibernate에 알려야한다. ex) annotation or XML
@@ -43,7 +47,7 @@ public class Account { // Entity Type은 @Id(식별자)를 갖고 있다.
     private String email;
 
     @Temporal(TemporalType.TIMESTAMP) // Calendar, Date에만 붙일 수 있음 ㅜㅜ
-    // JPA 5.2부터는 Java8 날짜 시간 모듈 사용 가능함.
+    // JPA 2.2부터는 Java8 날짜 시간 모듈 사용 가능함.
     @CreatedDate
     private Date createdAt;
 
@@ -57,6 +61,9 @@ public class Account { // Entity Type은 @Id(식별자)를 갖고 있다.
         @AttributeOverride(name = "street", column = @Column(name = "home_street")) // 새 이름 명명
     })
     private Address address; // Composit한 value type 매핑
+
+//    @OneToMany
+//    private Set<Study> studies = new HashSet<>();
 
     // getter, setter가 없어도 컬럼과 매핑됨.
     public Long getId() {
@@ -98,4 +105,12 @@ public class Account { // Entity Type은 @Id(식별자)를 갖고 있다.
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+
+//    public Set<Study> getStudies() {
+//        return studies;
+//    }
+//
+//    public void setStudies(Set<Study> studies) {
+//        this.studies = studies;
+//    }
 }

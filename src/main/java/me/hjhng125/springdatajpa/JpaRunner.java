@@ -21,17 +21,20 @@ public class JpaRunner implements ApplicationRunner {
     //    @Transactional // 해당 메소드에만 적용
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        Session session = entityManager.unwrap(Session.class);
+
         Account account = new Account();
         account.setName("Hong");
         account.setPassword("hibernate");
         account.setCreatedAt(new Date());
         account.setEmail("hjhng125@nate.com");
+        session.save(account);
 
         Study study = new Study();
         study.setName("Spring data jpa");
         study.setOwner(account);
-        Session session = entityManager.unwrap(Session.class);
-        session.save(account);
+
+
         session.save(study);
 //        entityManager.persist(account);
     }

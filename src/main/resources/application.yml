@@ -1,4 +1,5 @@
 spring:
+  # connection pool 을 위한 세팅
   datasource:
     url: jdbc:postgresql://localhost:5432/springdata
     username: hjhng
@@ -6,11 +7,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto:
-        # update # 스키마를 새로 생성하지 않기에 데이터가 지워지지 않으며, 매핑할때 추가할 컬럼이 있으면 반영함.
+        # update 스키마를 새로 생성하지 않기에 데이터가 지워지지 않으며, 매핑할때 추가할 컬럼이 있으면 반영함.
         # 하지만 컬럼을 여러번 수정되면 테이블이 지저분해질 우려가 있다.
         # domain의 매핑 정보를 변경해도 적용되지 않았다면, 이미 컬럼이 존재하고 있기 때문이다.
         # 컬럼이 이미 존재하면 반영되지 않는다.
+
+        # validate 이미 스키마가 만들어져 있다고 가정하고, 매핑해야할 정보가 데이터베이스 잘 매핑이 되는지 검증하는 옵션.
+        # 매핑이 불가능하다고 판단되면 구동 시 에러를 뱉음. 상용 환경에 적합
         create # 매 실행마다 스키마를 새로 생성
+
     show-sql: true
     properties:
       hibernate:

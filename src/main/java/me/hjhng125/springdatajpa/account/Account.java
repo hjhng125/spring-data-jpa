@@ -2,8 +2,6 @@ package me.hjhng125.springdatajpa.account;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -11,12 +9,10 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import me.hjhng125.springdatajpa.address.Address;
-import me.hjhng125.springdatajpa.study.Study;
 import org.springframework.data.annotation.CreatedDate;
 
 // 테이블과 도메인 객체를 어떻게 매핑시킬지 hibernate에 알려야한다. ex) annotation or XML

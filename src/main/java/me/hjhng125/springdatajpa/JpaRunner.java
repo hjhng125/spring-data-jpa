@@ -1,10 +1,15 @@
 package me.hjhng125.springdatajpa;
 
+import java.util.List;
+import javafx.geometry.Pos;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import me.hjhng125.springdatajpa.comment.Comment;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import me.hjhng125.springdatajpa.post.Post;
-import org.hibernate.Session;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -47,23 +52,50 @@ public class JpaRunner implements ApplicationRunner {
 //        System.out.println("========================");
 //        System.out.println(hong.getName());
 //    } // println 이후에 insert query가 발생한다.
-      // query는 transaction이 commit 되고 난 이후(여기선 메서드의 종료 이후)에 발생한다. (write behind)
+    // query는 transaction이 commit 되고 난 이후(여기선 메서드의 종료 이후)에 발생한다. (write behind)
+
+//    @Override
+//    public void run(ApplicationArguments args) throws Exception {
+//        Post post = new Post();
+//        post.setTitle("Spring Data JPA");
+//
+//        Comment comment = new Comment();
+//        comment.setComment("comment");
+//        post.addComment(comment);
+//
+//        Comment comment1 = new Comment();
+//        comment1.setComment("comment1");
+//        post.addComment(comment1);
+//
+//        Session session = entityManager.unwrap(Session.class);
+//        session.save(post);
+//    }
 
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Post post = new Post();
-        post.setTitle("Spring Data JPA");
+//        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post AS p", Post.class);
+//
+//        List<Post> posts = query.getResultList();
+//        posts.forEach(System.out::println);
 
-        Comment comment = new Comment();
-        comment.setComment("comment");
-        post.addComment(comment);
+        // Criteria - Type Safe하나 매우 복잡함.
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Post> query = criteriaBuilder.createQuery(Post.class);
+//        Root<Post> from = query.from(Post.class);
+//        query.select(from);
 
-        Comment comment1 = new Comment();
-        comment1.setComment("comment1");
-        post.addComment(comment1);
+//        List<Post> posts = entityManager.createQuery(query).getResultList();
+//        posts.forEach(System.out::println);
 
-        Session session = entityManager.unwrap(Session.class);
-        session.save(post);
+        // NamedQuery - query를 sql mapper처럼 모아놓고 필요로 하는 곳에서 query name을 호출하는 방식
+//        TypedQuery<Post> all_post = entityManager.createNamedQuery("all_post", Post.class);
+//        List<Post> posts = all_post.getResultList();
+//        posts.forEach(System.out::println);
+
+        // NativeQuery
+        List<Post> posts = entityManager.createNativeQuery("SELECT * FROM Post", Post.class).getResultList();
+        posts.forEach(System.out::println);
+
     }
 }

@@ -6,9 +6,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import me.hjhng125.springdatajpa.comment.Comment;
 
+@NamedQueries(
+    @NamedQuery(name = "all_post", query = "SELECT p FROM Post AS p")
+)
 @Entity
 public class Post {
 
@@ -47,5 +52,13 @@ public class Post {
 
     public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            '}';
     }
 }

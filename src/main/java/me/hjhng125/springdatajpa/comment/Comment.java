@@ -14,6 +14,10 @@ public class Comment {
 
     private String comment;
 
+    private String title;
+
+    private int likeCount = 0;
+
     @ManyToOne
     private Post post;
 
@@ -39,5 +43,21 @@ public class Comment {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
     }
 }

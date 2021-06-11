@@ -2,6 +2,7 @@ package me.hjhng125.springdatajpa.comment;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -37,5 +38,6 @@ public interface CommentJpaRepository {
 
     Page<Comment> findByCommentContainsIgnoreCase(String keyword, Pageable pageable);
 
+    Stream<Comment> findByCommentContains(String keyword);
 
 }

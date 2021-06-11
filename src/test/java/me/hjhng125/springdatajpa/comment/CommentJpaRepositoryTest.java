@@ -102,4 +102,19 @@ class CommentJpaRepositoryTest {
         assertThat(commentPage.getTotalPages()).isEqualTo(1);
         assertThat(commentPage.getNumberOfElements()).isEqualTo(1);
     }
+
+    @Test
+    void findByCommentContainsIgnoreCaseToStream() {
+        this.createComment("spring", 10);
+        this.createComment("jpa", 30);
+        this.createComment("data", 20);
+
+        // Stream - java8부터 들어옴
+        try(Stream<Comment> commentStream = commentJpaRepository.findByCommentContains("spring")) {
+            Optional<Comment> first = commentStream.findFirst();
+            Comment comment = first.orElseThrow(IllegalArgumentException::new);
+            assertThat(comment.getLikeCount()).isEqualTo(10);
+        }
+
+    }
 }

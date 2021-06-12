@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 /**
  * SimpleJpaRepository는 JpaRepository의 최하단의 가장 많은 기능을 담고 있는 구현체이다.
- * 이를 확장하고 우리가 정의한 인터페이스를 구현한다.
+ * 이를 확장하고 우리가 정의한 인터페이스를 구현한다. 이렇게 해야 모든 기능을 구현하지 않아도됨.
  * 이 클래스는 baseRepository로 등록되어야 한다.
  * @EnableJpaRepositories(repositoryBaseClass = SimpleRepositoryImpl.class)
  * */

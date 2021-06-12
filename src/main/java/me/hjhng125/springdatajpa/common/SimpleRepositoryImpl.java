@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
  * 이 클래스는 baseRepository로 등록되어야 한다.
  * @EnableJpaRepositories(repositoryBaseClass = SimpleRepositoryImpl.class)
  * */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class SimpleRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements SimpleRepository<T, ID> {
 
     private final EntityManager entityManager;

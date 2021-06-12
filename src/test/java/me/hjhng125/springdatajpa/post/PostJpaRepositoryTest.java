@@ -97,4 +97,66 @@ class PostJpaRepositoryTest {
         postJpaRepository.save(post);
     }
 
+    @Test
+    void findMyPost() {
+        this.createPost("spring");
+        this.createPost("data");
+        this.createPost("jpa");
+        List<Post> myPost = postJpaRepository.findMyPost();
+
+        assertThat(myPost.size()).isEqualTo(3);
+    }
+
+    @Test
+    void save() {
+        Post post = new Post();
+        post.setTitle("hibernate");
+        postJpaRepository.save(post);
+        // test에서의 save()는 insert쿼리를 발생하지 않는다.
+        // @DataJpaTest 어노테이션 내부엔 @Transactional 어노테이션이 포함되어 있으며
+        // 이는 테스트 메서드가 실행될때 트랜잭션을 시작하고, 메서드가 종료되면 트랜잭션을 롤백해준다.
+        // Hibernate는 한 트랜잭션 내에서 불필요한 쿼리를 발생시키지 않는데,
+        // @Transactional 어노테이션이 메소드가 끝날때 롤백할 것이기 때문에 Hibernate가 불필요한 쿼리라 판단하는 것으로 보인다.
+    }
+
+    @Test
+    void delete() {
+        Post post = new Post();
+        post.setTitle("hibernate");
+        postJpaRepository.save(post);
+
+        postJpaRepository.delete(post);
+
+        // insert, delete 쿼리 둘다 발생하지 않았다.
+        // 어차피 롤백할 것이기 때문에 둘다 발생하지 않음.
+    }
+
+    @Test
+    void save_with_select() {
+        Post post = new Post();
+        post.setTitle("hibernate");
+        postJpaRepository.save(post);
+
+        postJpaRepository.findAll();
+
+        postJpaRepository.delete(post);
+
+        // save를 하여 영속성 컨텍스트에 객체가 들어있는데,
+        // findAll()을 호출하여 기존의 DB에 존재하는 값을 조회하려 할 경우 저 save() 메소드는 다음 select문에 영향을 미친다.
+        // 따라서 insert 쿼리와 select 쿼리가 발생한 것이며
+        // delete의 경우 어차피 롤백할 것이기에 발생하지 않음.
+    }
+
+    @Test
+    void delete_with_flush() {
+        Post post = new Post();
+        post.setTitle("hibernate");
+        postJpaRepository.save(post);
+
+        postJpaRepository.delete(post);
+        postJpaRepository.flush();
+
+        // flush()를 통해 강제적으로 쿼리 발생시킴
+    }
+
 }

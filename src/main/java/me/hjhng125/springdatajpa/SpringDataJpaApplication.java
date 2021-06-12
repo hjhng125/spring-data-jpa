@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 // Spring boot가 아닌 Spring을 사용할 경우 아래의 어노테이션을 붙여줘야 JPA를 사용할 수 있다.
 // Spring boot가 자동으로 설정해준다.
-// @EnableJpaRepositories
+// @EnableJpaRepositories(repositoryImplementationPostfix = '')
 public class SpringDataJpaApplication {
 
     public static void main(String[] args) {

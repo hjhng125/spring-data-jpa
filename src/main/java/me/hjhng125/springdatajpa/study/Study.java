@@ -5,9 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import me.hjhng125.springdatajpa.account.Account;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class Study {
+public class Study extends AbstractAggregateRoot<Study> {
 
     @Id
     @GeneratedValue
@@ -41,5 +42,10 @@ public class Study {
 
     public void setOwner(Account owner) {
         this.owner = owner;
+    }
+
+    public Study registerEvent() {
+        this.registerEvent(new StudyEvent(this));
+        return this;
     }
 }

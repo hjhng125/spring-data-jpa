@@ -47,6 +47,10 @@ public class PostController {
         return post.getTitle();
     }
 
+    /**
+     * Spring MVC는 handler 메서드 파라미터들에 아래와 같은 타입을 지원한다.
+     * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/method/support/HandlerMethodArgumentResolver.html
+     * 추가로 Spring data jpa의 웹 기능을 사용하면 Pageable과 Sort를 지원한다.*/
     @GetMapping("/posts")
     public Page<Post> getPosts(Pageable pageable) {
         return postJpaRepository.findAll(pageable);

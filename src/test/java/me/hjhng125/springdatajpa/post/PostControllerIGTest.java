@@ -37,11 +37,25 @@ public class PostControllerIGTest {
             .andExpect(content().string(save.getTitle()));
     }
 
+//    @Test
+//    void getPosts() throws Exception {
+//        Post post = new Post();
+//        post.setTitle("spring data jpa");
+//        postJpaRepository.save(post);
+//
+//        mockMvc.perform(get("/posts")
+//            .param("page", "0")
+//            .param("size", "10")
+//            .param("sort", "createdAt,desc")
+//            .param("sort", "title"))
+//            .andDo(print())
+//            .andExpect(status().isOk())
+//            .andExpect(jsonPath("$.content[0].title", is("spring data jpa")));
+//    }
+
     @Test
-    void getPosts() throws Exception {
-        Post post = new Post();
-        post.setTitle("spring data jpa");
-        Post save = postJpaRepository.save(post);
+    void getPostsWithHateoas() throws Exception {
+        createPost();
 
         mockMvc.perform(get("/posts")
             .param("page", "0")
@@ -49,7 +63,18 @@ public class PostControllerIGTest {
             .param("sort", "createdAt,desc")
             .param("sort", "title"))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].title", is("spring data jpa")));
+            .andExpect(status().isOk());
+    }
+
+    private void createPost() {
+        int postsCnt = 100;
+
+        while(postsCnt > 0) {
+            Post post = new Post();
+            post.setTitle("spring data jpa");
+            postJpaRepository.save(post);
+            postsCnt--;
+        }
+
     }
 }

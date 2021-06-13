@@ -2,6 +2,9 @@ package me.hjhng125.springdatajpa.post;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,9 +53,26 @@ public class PostController {
     /**
      * Spring MVC는 handler 메서드 파라미터들에 아래와 같은 타입을 지원한다.
      * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/method/support/HandlerMethodArgumentResolver.html
-     * 추가로 Spring data jpa의 웹 기능을 사용하면 Pageable과 Sort를 지원한다.*/
+     * 추가로 Spring data jpa의 웹 기능을 사용하면 Pageable과 Sort를 지원한다.
+     * */
+//    @GetMapping("/posts")
+//    public Page<Post> getPosts(Pageable pageable) {
+//        return postJpaRepository.findAll(pageable);
+//    }
+
+    /**
+     * HATEOAS를 쓰면 Pageable에 들어있는 값을 통해
+     * 클라이언트에서 연관된 링크를 유추할 필요가 없다.
+     *
+     * spring hateoas 1.2.4에서 아래와 같이 변경되었다.
+     *
+     * ResourceSupport is now RepresentationModel
+     * Resource is now EntityModel
+     * Resources is now CollectionModel
+     * PagedResources is now PagedModel
+     * */
     @GetMapping("/posts")
-    public Page<Post> getPosts(Pageable pageable) {
-        return postJpaRepository.findAll(pageable);
+    public PagedModel<EntityModel<Post>> getPostsWithHateoas(Pageable pageable, PagedResourcesAssembler<Post> assembler) {
+        return assembler.toModel(postJpaRepository.findAll(pageable));
     }
 }

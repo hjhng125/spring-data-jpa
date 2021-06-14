@@ -1,6 +1,7 @@
 package me.hjhng125.springdatajpa.study;
 
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,6 +10,13 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 
     List<Study> findByNameStartsWith(String name);
 
-    @Query("SELECT s FROM Study s WHERE s.name = ?1") // 만약 nativeQuery라면 nativeQuery = true를 준다.
-    List<Study> findByName(String name);
+//    @Query("SELECT s FROM Study s WHERE s.name = ?1") // 만약 nativeQuery라면 nativeQuery = true를 준다.
+//    List<Study> findByName(String name);
+
+
+//    @Query("SELECT s FROM Study s WHERE s.name = ?1")
+    @Query("SELECT s, s.name AS sName FROM Study s WHERE s.name = ?1") // 이처럼 alias가 적용된 sName도 가능하다.
+    List<Study> findByName(String name, Sort sort); // 쿼리 뒤에 order by를 추가하고 sort만 추가해도 정렬할 수 있다.
+                                                    // 정렬 옵션에 들어갈 수 있는 값은 property이거나, alias어야 한다.
+
 }

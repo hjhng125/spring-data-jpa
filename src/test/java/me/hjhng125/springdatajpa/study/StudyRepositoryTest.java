@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
@@ -63,7 +66,11 @@ class StudyRepositoryTest {
     void findByNameWithNamedQuery() {
         createStudy("spring data jpa");
 
-        List<Study> studies = studyRepository.findByName("spring data jpa");
+//        List<Study> studies = studyRepository.findByName("spring data jpa");
+//        List<Study> studies = studyRepository.findByName("spring data jpa", Sort.by(Direction.DESC, "name")); // 정렬 옵션에 들어갈 수 있는 값은 property이거나, (name)
+//        List<Study> studies = studyRepository.findByName("spring data jpa", Sort.by(Direction.DESC, "sName")); // alias어야 한다 (sName).
+        List<Study> studies = studyRepository.findByName("spring data jpa", JpaSort.unsafe("LENGTH(name)")); // 위의 두 경우가 아닌 함수를 사용하고 싶다면 JpaSort.unsafe를 사용하자.
+
         assertThat(studies.size()).isEqualTo(1);
     }
 

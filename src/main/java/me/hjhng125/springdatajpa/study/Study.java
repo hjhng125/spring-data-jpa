@@ -21,6 +21,8 @@ public class Study extends AbstractAggregateRoot<Study> {
 
     private String name;
 
+    private String description;
+
     @ManyToOne // 현재 reference가 한개이므로 one이라고 생각하자.
     // 자기 자신안에 해당 entity에 대한 외래키를 생성한다.
     private Account owner;
@@ -52,5 +54,13 @@ public class Study extends AbstractAggregateRoot<Study> {
     public Study registerEvent() {
         this.registerEvent(new StudyEvent(this));
         return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

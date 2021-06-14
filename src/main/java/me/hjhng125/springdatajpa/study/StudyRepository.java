@@ -3,6 +3,7 @@ package me.hjhng125.springdatajpa.study;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -20,9 +21,13 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
 //    @Query("SELECT s, s.name AS sName FROM Study s WHERE s.name = ?1") // 이처럼 alias가 적용된 sName도 가능하다.
 //    List<Study> findByName(String name, Sort sort);
 
-//    @Query("SELECT s FROM Study as s WHERE s.name = :name")
+    //    @Query("SELECT s FROM Study as s WHERE s.name = :name")
     @Query("SELECT s FROM #{#entityName} as s WHERE s.name = :name") // SPEL을 사용하면 @Query에서 엔터티 이름을 #{#entityName}로 표현할 수 있다. 자동으로 매핑됨
     List<Study> findByName(@Param("name") String keyword, Sort sort);
 
-
+    // 권장되는 방법은 아니다. 너무 복잡하고, 운영 중 실수를 야기할 수 있다.
+    @Modifying(clearAutomatically = true) // clearAutomatically : 해당 쿼리 실행 후 persistenceContext를 clear한다.
+                                          // flushAutomatically : 해당 쿼리 실행 전에 persistenceConext의 상태를 flush하는 것
+    @Query("UPDATE Study s SET s.name = ?1 WHERE s.id = ?2")
+    int updateName(String hibernate, Long id);
 }

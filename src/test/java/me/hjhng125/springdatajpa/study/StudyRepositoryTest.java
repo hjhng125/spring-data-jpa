@@ -3,6 +3,7 @@ package me.hjhng125.springdatajpa.study;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import me.hjhng125.springdatajpa.config.StudyListenerConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,4 +75,31 @@ class StudyRepositoryTest {
         assertThat(studies.size()).isEqualTo(1);
     }
 
+    @Test
+    void updateStudy() {
+        Study spring = createStudy("spring data jpa");
+
+        int update = studyRepository.updateName("hibernate", spring.getId());
+        assertThat(update).isEqualTo(1);
+
+        /**
+         * 위에서 업데이트를 했고 쿼리도 정상적으로 발생했지만 아래의 테스트는 실패한다.
+         * 왜냐하면 아직 트랜잭션이 끝나지 않았기에 select query가 발생하지 않고,
+         * 캐시에 남아있는 'spring data jpa'라는 이름의 객체를 그대로 리턴했기 때문이다.
+         * 위의 업데이트는 사실상 persistenceContext에서 관리하는 객체를 수정하지 않고 DB의 데이터를 바로 수정했다.
+         * 따라서 DB에 쿼리를 날려야만 반영된 것을 알 수 있기에 지금 이 트랜잭션에서는 변경되었음을 알 수가 없다.
+         * 이 방법을 해결하기 위해서 repository에 명시한 @Modifying에 clearAutomatically = true를 주는 것이 하나의 방법이 될 것이다.
+         * 쿼리 실행 후 persistenceContext를 clear해주면 select쿼리가 왔을 때 persistenceContext가 비워져있으니 새로 DB에서 읽어온다.
+         * */
+        Optional<Study> studyOptional = studyRepository.findById(spring.getId());
+        assertThat(studyOptional.get().getName()).isEqualTo("hibernate");
+    }
+
+    @Test
+    void updateStudy_jpa() {
+        Study study = createStudy("spring data jpa");
+        study.setName("hibernate");
+
+        assertThat(study.getName()).isEqualTo(studyRepository.findById(study.getId()).get().getName());
+    }
 }

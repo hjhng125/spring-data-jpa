@@ -51,4 +51,8 @@ public interface CommentJpaRepository {
     @EntityGraph(attributePaths = "post") // 위와 같음. 더 간편함. 하지만 이것이 중복이 된다면 전처럼 entity위에 namedEntityGraph 선언 해야함
     Optional<Comment> getById(Long id);
 
+//    List<Comment> findByPost_Id(Long id);
+//    List<CommentSummary> findByPost_Id(Long id);
+
+    <T> List<T> findByPost_Id(Long id, Class<T> type);// CommentSummary와 CommentOnly 둘다 이 레파지토리에서 사용하고 싶은데 메소드명과 파라미터가 같으니 재정의가 안됨. Generics를 써보자
 }

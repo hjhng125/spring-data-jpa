@@ -30,6 +30,12 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
+    private int up;
+
+    private int down;
+
+    private boolean best;
+
     public Long getId() {
         return id;
     }
@@ -68,5 +74,29 @@ public class Comment {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public int getUp() {
+        return up;
+    }
+
+    public int getDown() {
+        return down;
+    }
+
+    public boolean isBest() {
+        return best;
+    }
+
+    public void setUp(int up) {
+        this.up = up;
+    }
+
+    public void setDown(int down) {
+        this.down = down;
+    }
+
+    public void setBest(boolean best) {
+        this.best = best;
     }
 }

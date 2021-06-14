@@ -146,4 +146,31 @@ class CommentJpaRepositoryTest {
         System.out.println("============================================");
         Optional<Comment> byId = commentJpaRepository.findById(1L);
     }
+
+    @Test
+    void findByPost_Id() {
+//        List<Comment> byPost_id = commentJpaRepository.findByPost_Id(1L);// 모든 컬럼 다가져옴
+        List<CommentSummary> byPost_id = commentJpaRepository.findByPost_Id(1L, CommentSummary.class); // CommentSummary에 선언된 프로퍼티만 가져옴 - Closed Projection
+
+        Post post = new Post();
+        post.setTitle("spring");
+        Post savePost = postJpaRepository.save(post);
+
+        Comment comment = new Comment();
+        comment.setComment("spring data jpa");
+        comment.setPost(savePost);
+        comment.setUp(10);
+        comment.setDown(1);
+        Comment save = commentJpaRepository.save(comment);
+
+        commentJpaRepository.findByPost_Id(savePost.getId(), CommentSummary.class).forEach(c -> {
+            System.out.println("========================================");
+            System.out.println(c.getVotes());
+        });
+
+        commentJpaRepository.findByPost_Id(savePost.getId(), CommentOnly.class).forEach(c -> {
+            System.out.println("========================================");
+            System.out.println(c.getComment());
+        });
+    }
 }

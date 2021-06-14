@@ -1,25 +1,33 @@
 package me.hjhng125.springdatajpa.post;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @DataJpaTest
+@ActiveProfiles("test")
 class PostJpaRepositoryTest {
 
     @Autowired
     private PostJpaRepository postJpaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     void CRUDRepository() {
@@ -159,4 +167,39 @@ class PostJpaRepositoryTest {
         // flush()를 통해 강제적으로 쿼리 발생시킴
     }
 
+    @Test
+    void save_and_update() {
+
+        // 이 과정은 Transient한 상태의 객체를 Persistent한 객체로 만드는 것
+        // save() 내부적으로 PersistenceContext에 객체가 없다면 persist()를 호출한다.
+        // entity의 @Id가 명시된 프로퍼티를 찾고, 해당 프로퍼티가 null이면 Transient 상태로 판단한다.
+        Post post = new Post();
+        post.setTitle("jpa");
+        Post save = postJpaRepository.save(post);// insert, 리턴된 객체는 항상 PersistenceContext에 영속화되어 있는 객체이다.
+
+        assertTrue(entityManager.contains(post));
+        assertTrue(entityManager.contains(save));
+        assertSame(save, post);
+
+        // 이 과정은 Detached한 상태의 객체를 Persistent한 객체로 만드는 것
+        // save() 내부적으로 PersistenceContext에 객체가 이미 존재하기에 merge()를 호출한다.
+        // entity의 @Id가 명시된 프로퍼티를 찾고, 해당 프로퍼티가 존재하면 Detached 상태로 판단한다.
+        Post newPost = new Post();
+        newPost.setId(post.getId());
+        newPost.setTitle("spring data jpa");
+        Post merge = postJpaRepository.save(newPost);// update
+        // 리턴된 merge는 PersistenceContext에서 merge후 관리하고 있는 상태의 객체이다.
+        // 하지만 newPost는 PersistenceContext에 캐싱된 객체가 아니다.
+        // merge는 내부적으로 파라미터로 전달받은 객체의 복사본을 만들고 이 복사본을 영속화시킨 후 리턴한다.
+        // 따라서 아래와 같은 결과를 얻을 수 있다.
+
+        assertTrue(entityManager.contains(merge));
+        assertThat(entityManager.contains(newPost)).isFalse();
+        assertThat(newPost == merge).isFalse();
+
+        //
+
+        List<Post> all = postJpaRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+    }
 }

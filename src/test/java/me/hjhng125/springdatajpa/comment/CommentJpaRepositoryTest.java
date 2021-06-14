@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import me.hjhng125.springdatajpa.post.Post;
+import me.hjhng125.springdatajpa.post.PostJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -12,12 +14,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
+@ActiveProfiles("test")
 class CommentJpaRepositoryTest {
 
     @Autowired
     private CommentJpaRepository commentJpaRepository;
+
+    @Autowired
+    private PostJpaRepository postJpaRepository;
 
     @Test
     void save() {
@@ -116,5 +123,27 @@ class CommentJpaRepositoryTest {
             assertThat(comment.getLikeCount()).isEqualTo(10);
         }
 
+    }
+
+    @Test
+    void getComment() {
+        Post post = new Post();
+        post.setTitle("spring");
+        Post savedPost = postJpaRepository.save(post);
+
+        Comment comment = new Comment();
+        comment.setComment("spring data jpa");
+        comment.setPost(savedPost);
+        Comment savedComment = commentJpaRepository.save(comment);
+
+        /**
+         * Post left join 해서 가져옴.
+         * @~One은 fetchType이 기본값이 Eager이기 때문
+         * @~Many는 fetchType이 기본값이 Lazy임
+         * */
+
+        Optional<Comment> getById = commentJpaRepository.getById(1L);
+        System.out.println("============================================");
+        Optional<Comment> byId = commentJpaRepository.findById(1L);
     }
 }

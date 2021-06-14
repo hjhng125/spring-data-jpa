@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.RepositoryDefinition;
 import org.springframework.lang.NonNull;
@@ -39,5 +41,14 @@ public interface CommentJpaRepository {
     Page<Comment> findByCommentContainsIgnoreCase(String keyword, Pageable pageable);
 
     Stream<Comment> findByCommentContains(String keyword);
+
+
+    /**
+     * EntityGraphType
+     * FETCH : 기본 타입과 설정한 관계에 대해 Eager모드로 가져온다. 설정되지 않은 관계는 Lazy
+     * LOAD : 기본 타입과 설정한 관계에 대해 Eager모드로 가져온다. 설정되지 않은 관계는 기본 패치 전략 따름(~one은 eager, ~many는 lazy) */
+//    @EntityGraph(value = "Comment.post", type = EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = "post") // 위와 같음. 더 간편함. 하지만 이것이 중복이 된다면 전처럼 entity위에 namedEntityGraph 선언 해야함
+    Optional<Comment> getById(Long id);
 
 }

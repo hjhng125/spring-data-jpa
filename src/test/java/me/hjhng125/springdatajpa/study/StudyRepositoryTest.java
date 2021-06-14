@@ -1,13 +1,18 @@
 package me.hjhng125.springdatajpa.study;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import me.hjhng125.springdatajpa.config.StudyListenerConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
+@ActiveProfiles("test")
 @Import(StudyListenerConfig.class)
 class StudyRepositoryTest {
 
@@ -25,8 +30,7 @@ class StudyRepositoryTest {
      * @AfterDomainEventPublication가 선언된 메소드에서 Collections에 쌓여있던 이벤트를 자동으로 비워준다. */
     @Test
     void event() {
-        Study study = new Study();
-        study.setName("spring data jpa");
+        Study study = createStudy("spring data jpa");
 
         StudyEvent studyEvent = new StudyEvent(study);
         applicationContext.publishEvent(studyEvent);
@@ -37,10 +41,30 @@ class StudyRepositoryTest {
      * save()가 호출될 때 자동으로 퍼블리싱한다.*/
     @Test
     void domain_event() {
-        Study study = new Study();
-        study.setName("spring data jpa");
+        createStudy("spring data jpa");
+    }
 
-        studyRepository.save(study.registerEvent());
+    private Study createStudy(String name) {
+        Study study = new Study();
+        study.setName(name);
+        return studyRepository.save(study.registerEvent());
+    }
+
+    @Test
+    void findByNameStartsWith() {
+        createStudy("spring data jpa");
+
+        List<Study> studies = studyRepository.findByNameStartsWith("spring");
+        assertThat(studies.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    void findByNameWithNamedQuery() {
+        createStudy("spring data jpa");
+
+        List<Study> studies = studyRepository.findByName("spring data jpa");
+        assertThat(studies.size()).isEqualTo(1);
     }
 
 }

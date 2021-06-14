@@ -4,10 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import me.hjhng125.springdatajpa.account.Account;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
+// 이런식의 Named Query가 많아지면 도메인 클래스가 더러워지고 jpql 이나 sql 코드가 있는 것이 보기 좋지 않다.
+//@NamedQuery(name = "Study.findByName", query = "SELECT s FROM Study s WHERE s.name = ?1") // jpql
+//@NamedNativeQuery() 를 통해 native query도 가능하다.
 public class Study extends AbstractAggregateRoot<Study> {
 
     @Id

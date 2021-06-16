@@ -1,15 +1,6 @@
 package me.hjhng125.springdatajpa;
 
-import java.util.List;
-import javafx.geometry.Pos;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import me.hjhng125.springdatajpa.post.Post;
+import me.hjhng125.springdatajpa.post.PostJpaRepository;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -19,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional // 해당 클래스의 모든 메소드에 적용
 public class JpaRunner implements ApplicationRunner {
 
-    @PersistenceContext
-    EntityManager entityManager; // jpa의 핵심 (JPA는 Hibernate(ORM Framework)를 사용한다.)
+//    @PersistenceContext
+//    EntityManager entityManager; // jpa의 핵심 (JPA는 Hibernate(ORM Framework)를 사용한다.)
 
     //    @Transactional // 해당 메소드에만 적용
 //    @Override
@@ -72,8 +63,8 @@ public class JpaRunner implements ApplicationRunner {
 //    }
 
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+//    @Override
+//    public void run(ApplicationArguments args) throws Exception {
 //        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post AS p", Post.class);
 //
 //        List<Post> posts = query.getResultList();
@@ -94,8 +85,19 @@ public class JpaRunner implements ApplicationRunner {
 //        posts.forEach(System.out::println);
 
         // NativeQuery
-        List<Post> posts = entityManager.createNativeQuery("SELECT * FROM Post", Post.class).getResultList();
-        posts.forEach(System.out::println);
+//        List<Post> posts = entityManager.createNativeQuery("SELECT * FROM Post", Post.class).getResultList();
+//        posts.forEach(System.out::println);
+//
+//    }
 
+    private final PostJpaRepository postJpaRepository;
+
+    public JpaRunner(PostJpaRepository postJpaRepository) {
+        this.postJpaRepository = postJpaRepository;
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        postJpaRepository.findAll().forEach(System.out::println);
     }
 }

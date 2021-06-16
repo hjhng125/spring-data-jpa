@@ -20,3 +20,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    database: postgresql
+
+# hibernate가 만들어낸 query에는 실질적인 값이 ?로 나와 알 수가 없었다.
+# 아래 옵션을 주면 값을 알 수 가 있다.
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: trace

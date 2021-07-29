@@ -102,4 +102,17 @@ class StudyRepositoryTest {
 
         assertThat(study.getName()).isEqualTo(studyRepository.findById(study.getId()).get().getName());
     }
+
+    @Test
+    void selectTest() {
+        //given
+        Study test = createStudy("test");
+        //when
+        List<Study> all = studyRepository.findAll();
+        //then
+        for (Study study : all) {
+            System.out.println("study = " + study);
+        }
+        assertThat(all).extracting("name").contains("test");
+    }
 }

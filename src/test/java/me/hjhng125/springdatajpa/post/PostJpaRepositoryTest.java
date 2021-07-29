@@ -9,9 +9,11 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import me.hjhng125.springdatajpa.config.TestConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.Nullable;
@@ -21,6 +23,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Import(TestConfiguration.class)
 class PostJpaRepositoryTest {
 
     @Autowired
@@ -187,15 +190,15 @@ class PostJpaRepositoryTest {
         Post newPost = new Post();
         newPost.setId(post.getId());
         newPost.setTitle("spring data jpa");
-        Post merge = postJpaRepository.save(newPost);// update
+        Post merged = postJpaRepository.save(newPost);// update
         // 리턴된 merge는 PersistenceContext에서 merge후 관리하고 있는 상태의 객체이다.
         // 하지만 newPost는 PersistenceContext에 캐싱된 객체가 아니다.
-        // merge는 내부적으로 파라미터로 전달받은 객체의 복사본을 만들고 이 복사본을 영속화시킨 후 리턴한다.
+        // merge()는 내부적으로 파라미터로 전달받은 객체의 복사본을 만들고 이 복사본을 영속화시킨 후 리턴한다.
         // 따라서 아래와 같은 결과를 얻을 수 있다.
 
-        assertTrue(entityManager.contains(merge));
+        assertTrue(entityManager.contains(merged));
         assertThat(entityManager.contains(newPost)).isFalse();
-        assertThat(newPost == merge).isFalse();
+        assertThat(newPost == merged).isFalse();
 
         //
 

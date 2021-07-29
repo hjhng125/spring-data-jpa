@@ -12,6 +12,7 @@
 * Spring boot 2.4.3
 * Java 11
 * Maven
+* JUnit5
 * Used Database : postgresql
 
 ### Used Database : postgresql
